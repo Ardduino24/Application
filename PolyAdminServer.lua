@@ -291,11 +291,8 @@ PolyCMDBridge.OnServerInvoke = function(Player: Player, CommandName: string, Arg
 end
 -- End Command Handler--
 -- Init --
-
-
 local DataStoreService = game:GetService("DataStoreService")
 local DataStore = DataStoreService:GetDataStore("PolyDataStore")
-
 shared.DataStore = DataStore
 local UserID = 0
 function OnPlayerAdded(Player: Player)
@@ -318,8 +315,6 @@ function OnPlayerAdded(Player: Player)
 		warn("First time setup for Poly Admin has completed!")
 		PolyInfo:FireClient(Player, {[1]="Prefix", [2] = "Prefix is \";\" type \"cmds\" to view the commands"})
 	end
-
-	
 	local Config = Utils:GetConfig()
 	local UserID2 = tostring(Player.UserId)
 	-- Lets check the datastore using Utils:IsPlayerBanned to ensure that the user is not banned
