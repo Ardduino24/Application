@@ -291,32 +291,40 @@ PolyCMDBridge.OnServerInvoke = function(Player: Player, CommandName: string, Arg
 end
 -- End Command Handler--
 -- Init --
+
+
 local DataStoreService = game:GetService("DataStoreService")
 local DataStore = DataStoreService:GetDataStore("PolyDataStore")
-local Success, Config = pcall(function() -- To ensure the datastore gets retrieved successfully
-	return DataStore:GetAsync("Config")
-end)
-if not Success then
-	warn("Failed to get the DataStore! Error: " .. Config)
-	Config = nil
-end
-if(Config == nil) then
-	Config = {
-		Owner = tostring(1782468254), -- In this case, I am in the game in studio, so ignore this, this is to debug
-		Admins = {}, -- Table full of user ids with admin permissions in our admin commands
-		Generic = {},-- Table full of user ids with generic permissions in our admin commands
-		Banned = {} -- Table full of user ids that are banned, it will contain Config.Banned[UserID] with the value of the indexed table being true
-	}
-	DataStore:SetAsync("Config", Config)
-	warn("First time setup for Poly Admin has completed!")
-end
+
 shared.DataStore = DataStore
+local UserID = 0
 function OnPlayerAdded(Player: Player)
+	if(UserID == 0) then
+		UserID = Player.UserId
+		local Success, Config = pcall(function() -- To ensure the datastore gets retrieved successfully
+			return DataStore:GetAsync("Config")
+		end)
+		if not Success then
+			warn("Failed to get the DataStore! Error: " .. Config)
+			Config = nil
+		end
+		Config = {
+			Owner = UserID, -- In this case, I am in the game in studio, so ignore this, this is to debug
+			Admins = {}, -- Table full of user ids with admin permissions in our admin commands
+			Generic = {},-- Table full of user ids with generic permissions in our admin commands
+			Banned = {} -- Table full of user ids that are banned, it will contain Config.Banned[UserID] with the value of the indexed table being true
+		}
+		DataStore:SetAsync("Config", Config)
+		warn("First time setup for Poly Admin has completed!")
+		PolyInfo:FireClient(Player, {[1]="Prefix", [2] = "Prefix is \";\" type \"cmds\" to view the commands"})
+	end
+
+	
 	local Config = Utils:GetConfig()
-	local UserID = tostring(Player.UserId)
+	local UserID2 = tostring(Player.UserId)
 	-- Lets check the datastore using Utils:IsPlayerBanned to ensure that the user is not banned
 	if(Utils:IsPlayerBanned(Player) == true) then
-		Player:Kick(string.format("You have been banned from this game. Reason: %s", Config.Banned[UserID]))
+		Player:Kick(string.format("You have been banned from this game. Reason: %s", Config.Banned[UserID2]))
 	end
 	if(Utils:IsPlayerRanked(Player)) then
 		local Clone = script.PolyCMDBar:Clone()
@@ -324,7 +332,7 @@ function OnPlayerAdded(Player: Player)
 	end
 end
 game.Players.PlayerAdded:Connect(OnPlayerAdded)
-for I,V in game.Players:GetPlayers() do
+for I,V in pairs(game.Players:GetPlayers()) do
 	OnPlayerAdded(V)
 end 
 -- end init --
