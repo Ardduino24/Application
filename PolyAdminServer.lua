@@ -86,7 +86,7 @@ function FindPlayer(PlayerName)
 	local Lower = string.lower(PlayerName)
 	for I, V in pairs(game.Players:GetPlayers()) do
 		-- I will comapare the lowercase name to ensure it is unique
-		if string.lower(V.Name) == Lower or string.lower(V.DisplayName) == Lower then
+		if(string.lower(V.Name) == Lower or string.lower(V.DisplayName) == Lower) then
 			return V
 		end
 	end
@@ -201,7 +201,6 @@ AdminCommands["ban"] = CMD.New("ban", function(Player: Player, Args)
 		local Config = Utils:GetConfig()
 		local UserID = tostring(TargetPlayer.UserId)
 		if(UserID == tostring(Config.Owner)) then -- GG if you try to ban the owner
-			Player:Kick("Nice try!")
 			return {false, "You cannot ban the owner!"}
 		end
 		if(Config.Banned[UserID] ~= nil) then
@@ -301,8 +300,8 @@ function OnPlayerAdded(Player: Player)
 		local Success, Config = pcall(function() -- To ensure the datastore gets retrieved successfully
 			return DataStore:GetAsync("Config")
 		end)
-		if not Success then
-			warn("Failed to get the DataStore! Error: " .. Config)
+		if(not Success) then
+			warn(string.format("Failed to get the config! Error: %s", Config))
 			Config = nil
 		end
 		Config = {
