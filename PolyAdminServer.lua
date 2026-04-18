@@ -240,7 +240,6 @@ end)
 AdminCommands["shutdown"] = CMD.New("shutdown", function(Player: Player, Args)
 	local Reason = table.concat(Args, " ", 1) -- We will combine all the args into 1 string
 	task.spawn(function()
-		task.wait(5)
 		for I,V in game.Players:GetPlayers() do
 			V:Kick(string.format("The server has been shutdown! Reason: %s", Reason))
 		end
