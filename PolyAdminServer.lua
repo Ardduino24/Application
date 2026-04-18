@@ -86,7 +86,7 @@ function FindPlayer(PlayerName)
 	local Lower = string.lower(PlayerName)
 	for I, V in pairs(game.Players:GetPlayers()) do
 		-- I will comapare the lowercase name to ensure it is unique
-		if(string.lower(V.Name) == Lower or string.lower(V.DisplayName) == Lower) then
+		if string.lower(V.Name) == Lower or string.lower(V.DisplayName) == Lower then
 			return V
 		end
 	end
@@ -183,6 +183,13 @@ GenericCommands["kill"] = CMD.New("kill", function(Player: Player, Args)
 	end
 	return {false, string.format("Player %s does not exist!", Target)}
 end)
+GenericCommands["btools"] = CMD.New("btools", function(Player: Player, Args)
+	local Target = Args[1]
+	local HopperBin = Instance.new("HopperBin")
+	HopperBin.BinType = Enum.BinType.Hammer
+	HopperBin.Parent = Player.Backpack
+	return {true, nil}
+end)
 AdminCommands["kick"] = CMD.New("kick", function(Player: Player, Args)
 	local Target = Args[1]	
 	local Reason = table.concat(Args, " ", 2)
@@ -232,12 +239,6 @@ AdminCommands["unban"] = CMD.New("unban", function(Player: Player, Args)
 end)
 AdminCommands["shutdown"] = CMD.New("shutdown", function(Player: Player, Args)
 	local Reason = table.concat(Args, " ", 1) -- We will combine all the args into 1 string
-	for I,V in game.Players:GetPlayers() do
-		-- Parent the shutdown GUI to the player's playergui
-		local ShutdownGUI = script.Shutdown:Clone()
-		ShutdownGUI.Parent = V.PlayerGui
-		ShutdownGUI.Frame.Reason.Text = string.format("Reason: %s", Reason)
-	end
 	task.spawn(function()
 		task.wait(5)
 		for I,V in game.Players:GetPlayers() do
@@ -300,8 +301,8 @@ function OnPlayerAdded(Player: Player)
 		local Success, Config = pcall(function() -- To ensure the datastore gets retrieved successfully
 			return DataStore:GetAsync("Config")
 		end)
-		if(not Success) then
-			warn(string.format("Failed to get the config! Error: %s", Config))
+		if not Success then
+			warn("Failed to get the DataStore! Error: " .. Config)
 			Config = nil
 		end
 		Config = {
