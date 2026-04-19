@@ -175,7 +175,7 @@ GenericCommands["kill"] = CMD.New("kill", function(Player: Player, Args)
 	local Target = Args[1]
 	local TargetPlayer = FindTargetPlayer(Player, Target)
 	if(TargetPlayer ~= nil) then
-		if(TargetPlayer:FindFirstChild("Character") and TargetPlayer.Character:FindFirstChild("Humanoid")) then
+		if( TargetPlayer.Character:FindFirstChild("Humanoid")) then
 			TargetPlayer.Character.Humanoid.Health = 0
 			return {true, nil}
 		end
